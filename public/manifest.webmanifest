@@ -1,0 +1,20 @@
+{
+  "name": "Ojàmi — Personal Market Shopper, Ibadan",
+  "short_name": "Ojàmi",
+  "description": "Send your market list. A verified Ojàmi shopper buys at real market price in Ibadan and delivers the same day.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFBF4",
+  "theme_color": "#06301C",
+  "categories": ["shopping", "food", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

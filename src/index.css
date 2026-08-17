@@ -1,0 +1,326 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   OJÀMI DESIGN SYSTEM
+   Brand: warm Nigerian market energy, premium execution.
+   Deep forest green (fresh produce, trust) + market orange (tomatoes, sunset)
+   on a warm cream paper base.
+   ========================================================================== */
+
+@theme {
+  /* ---- Brand: forest / market green ---- */
+  --color-brand-50: #eafaf0;
+  --color-brand-100: #ccf3dd;
+  --color-brand-200: #9ce7bf;
+  --color-brand-300: #5bd98d;
+  --color-brand-400: #2bc16c;
+  --color-brand-500: #17a05a;
+  --color-brand-600: #0f8049;
+  --color-brand-700: #0b5c34;
+  --color-brand-800: #083f25;
+  --color-brand-900: #06301c;
+  --color-brand-950: #041d11;
+
+  /* ---- Accent: market orange (tomato / palm oil / sunset) ---- */
+  --color-accent-50: #fff4ec;
+  --color-accent-100: #ffe3d0;
+  --color-accent-200: #ffc4a1;
+  --color-accent-300: #ffa45b;
+  --color-accent-400: #ff8534;
+  --color-accent-500: #ff6b18;
+  --color-accent-600: #ed4f05;
+  --color-accent-700: #c33c06;
+  --color-accent-800: #9a310d;
+  --color-accent-900: #7c2b0e;
+
+  /* ---- Paper: warm cream neutrals ---- */
+  --color-cream-50: #fffdf9;
+  --color-cream-100: #fffbf4;
+  --color-cream-200: #faf4e8;
+  --color-cream-300: #f2e9d7;
+  --color-cream-400: #e3d6bd;
+  --color-cream-500: #cbb894;
+
+  /* ---- Ink: warm dark greys ---- */
+  --color-ink-400: #8a8577;
+  --color-ink-500: #5f5b51;
+  --color-ink-600: #423f38;
+  --color-ink-700: #2b2925;
+  --color-ink-800: #1a1916;
+  --color-ink-900: #0e0d0c;
+
+  /* ---- Type ---- */
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Motion ---- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Radii ---- */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.75rem;
+
+  /* ---- Shadows ---- */
+  --shadow-soft: 0 2px 8px -2px rgb(6 48 28 / 0.08), 0 8px 30px -6px rgb(6 48 28 / 0.1);
+  --shadow-lift: 0 10px 24px -8px rgb(6 48 28 / 0.16), 0 24px 60px -18px rgb(6 48 28 / 0.22);
+  --shadow-glow: 0 0 0 1px rgb(23 160 90 / 0.16), 0 12px 40px -10px rgb(23 160 90 / 0.35);
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis drives scrolling; native smooth-scroll would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-cream-100 text-ink-800 font-sans antialiased;
+    overflow-x: hidden;
+    font-synthesis-weight: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-display tracking-[-0.03em];
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-accent-500 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-3 outline-brand-500 rounded-lg;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-cream-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-800/25 rounded-full border-[3px] border-solid border-cream-200;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-800/45;
+  }
+}
+
+/* ============================================================================
+   UTILITIES
+   ========================================================================== */
+
+@utility container-x {
+  @apply mx-auto w-full max-w-[80rem] px-5 sm:px-8 lg:px-12;
+}
+
+/* Fluid display type — scales smoothly instead of stepping at breakpoints */
+@utility text-display {
+  font-size: clamp(2.5rem, 6.1vw, 5.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+@utility text-h1 {
+  font-size: clamp(2rem, 4.35vw, 3.55rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+@utility text-h2 {
+  font-size: clamp(1.65rem, 3.4vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+@utility text-h3 {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+/* Small uppercase section label */
+@utility eyebrow {
+  @apply text-[0.7rem] font-bold uppercase tracking-[0.22em];
+}
+
+@utility gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    100deg,
+    var(--color-brand-700) 0%,
+    var(--color-brand-500) 38%,
+    var(--color-accent-500) 100%
+  );
+}
+
+/* Frosted card over imagery */
+/* Opaque enough to stay legible over busy market photography — the blur alone
+   is not sufficient contrast against high-frequency produce imagery. */
+@utility glass {
+  background: color-mix(in srgb, var(--color-cream-100) 90%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+@utility glass-dark {
+  background: color-mix(in srgb, var(--color-brand-950) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+/*
+ * Subtle paper grain — keeps large flat areas from looking dead.
+ *
+ * Deliberately does NOT set `position` on the element itself. It used to set
+ * `position: relative`, which silently beat a co-applied `absolute` (both are
+ * position utilities, so source order in the sheet decides — not the class
+ * attribute) and collapsed anything that combined the two. Pair `grain` with
+ * whatever positioning class the element actually needs.
+ */
+@utility grain {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.32;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility edge-fade-r {
+  mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+}
+
+/* Hide scrollbar but keep scrolling (mobile filter rails) */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================================================
+   KEYFRAMES — ambient loops that Framer Motion shouldn't own
+   ========================================================================== */
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(2deg);
+  }
+}
+
+@keyframes blob-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(4%, -6%) scale(1.08);
+  }
+  66% {
+    transform: translate(-5%, 4%) scale(0.95);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  80%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.animate-marquee {
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+}
+.animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+.animate-blob {
+  animation: blob-drift 22s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* Skeleton shimmer for lazily-loaded imagery */
+.shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

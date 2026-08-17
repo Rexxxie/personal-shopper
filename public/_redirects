@@ -1,0 +1,4 @@
+# Netlify / Cloudflare Pages SPA fallback.
+# Without this, a refresh on /pricing (or any shared deep link) is a hard 404 —
+# the router only exists once index.html has loaded.
+/*  /index.html  200
