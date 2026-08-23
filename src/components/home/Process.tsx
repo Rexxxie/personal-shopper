@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from 'motion/rea
 import { useRef, useState } from 'react'
 import { Check } from 'lucide-react'
 import { STEPS } from '@/data/content'
-import { P } from '@/data/images'
+import { P, PSet } from '@/data/images'
 import { Eyebrow, Section } from '@/components/ui/primitives'
 import { TextReveal, FadeText } from '@/components/ui/TextReveal'
 import { ButtonLink } from '@/components/ui/Button'
@@ -60,6 +60,7 @@ export function Process() {
                   <motion.img
                     key={s.n}
                     src={P(s.photo, 820, 1030)}
+                    {...PSet(s.photo, 820, 1030)}
                     alt={s.title}
                     loading={i === 0 ? 'eager' : 'lazy'}
                     initial={false}
@@ -149,6 +150,7 @@ export function Process() {
                 <div className="mb-5 aspect-[16/10] overflow-hidden rounded-2xl lg:hidden">
                   <img
                     src={P(step.photo, 760, 480)}
+                    {...PSet(step.photo, 760, 480)}
                     alt={step.title}
                     loading="lazy"
                     className="h-full w-full object-cover"

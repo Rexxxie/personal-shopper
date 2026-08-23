@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { ArrowRight, Check, Minus, Plus, Smartphone, Bell, MapPinned, Repeat } from 'lucide-react'
 import { TESTIMONIALS, FAQS, PLANS } from '@/data/content'
-import { P } from '@/data/images'
+import { P, PDecor } from '@/data/images'
 import { Eyebrow, Section, Stars, Chip, Blobs, Tilt } from '@/components/ui/primitives'
 import { TextReveal, FadeText } from '@/components/ui/TextReveal'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal'
@@ -519,7 +519,7 @@ export function FinalCta() {
         >
           {/* background photo + wash */}
           <div className="pointer-events-none absolute inset-0" aria-hidden>
-            <img src={P('tomatoBaskets', 1400, 800)} alt="" className="h-full w-full object-cover opacity-20" />
+            <img src={PDecor('tomatoBaskets', 640, 366)} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover opacity-20" />
             <div className="absolute inset-0 bg-gradient-to-b from-brand-950/70 via-brand-950/85 to-brand-950" />
             <div className="animate-blob absolute -left-[10%] top-[-30%] h-[28rem] w-[28rem] rounded-full bg-accent-500/25 blur-[110px]" />
             <div

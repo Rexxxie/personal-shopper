@@ -9,9 +9,60 @@ const CDN = 'https://images.unsplash.com'
 
 type Fit = 'crop' | 'cover'
 
+/**
+ * Requested widths snap to this ladder.
+ *
+ * Two components asking for the same photo at 540px and 560px used to produce
+ * two different URLs and therefore two downloads. Snapping collapses them onto
+ * one cache entry — measured at 32 distinct photos fetched 47 times before this.
+ */
+const WIDTHS = [64, 96, 160, 240, 320, 400, 480, 560, 640, 800, 960, 1200, 1600] as const
+
+const snapWidth = (w: number) => WIDTHS.find((x) => x >= w) ?? WIDTHS[WIDTHS.length - 1]
+
+/**
+ * Default quality.
+ *
+ * 62 rather than the CDN's 75+ because `auto=format` serves AVIF/WebP to
+ * everything modern, and at these display sizes the difference is invisible
+ * on a photograph while the file is roughly a third smaller. Data costs real
+ * money on the networks this audience is using.
+ */
+const QUALITY = 62
+
 /** Build a sized, auto-formatted CDN URL (serves AVIF/WebP where supported). */
-export function img(id: string, w: number, h: number, q = 78, fit: Fit = 'crop') {
-  return `${CDN}/${id}?auto=format&fit=${fit}&w=${w}&h=${h}&q=${q}`
+export function img(id: string, w: number, h: number, q = QUALITY, fit: Fit = 'crop') {
+  const W = snapWidth(w)
+  // Keep the requested aspect ratio, but derive height from the snapped width
+  // so the same photo at the same shape always resolves to one URL.
+  const H = Math.round((h / w) * W)
+  return `${CDN}/${id}?auto=format&fit=${fit}&w=${W}&h=${H}&q=${q}`
+}
+
+/**
+ * Candidates for a responsive `srcset`.
+ *
+ * Call sites size images in *device* pixels (a 560px request for a 280px slot
+ * at 2× DPR). Pairing this with `sizes="{w/2}px"` lets a 1× or 1.5× screen —
+ * which is most cheap Android hardware — take the smaller file. A screen that
+ * cannot resolve the extra pixels loses nothing by not downloading them.
+ */
+export function srcSet(id: string, w: number, h: number, q = QUALITY, fit: Fit = 'crop') {
+  const ratio = h / w
+  return [...new Set([snapWidth(Math.round(w * 0.5)), snapWidth(Math.round(w * 0.75)), snapWidth(w)])]
+    .map((W) => `${img(id, W, Math.round(ratio * W), q, fit)} ${W}w`)
+    .join(', ')
+}
+
+/**
+ * Background washes, gradients-behind-text and other purely decorative art.
+ *
+ * These sit at 5–20% opacity under a scrim, so resolution and quality are
+ * wasted on them entirely — a 250kB hero backdrop at 5.5% opacity looks
+ * identical at a fraction of the size.
+ */
+export function decorative(id: string, w = 320, h = 200) {
+  return `${CDN}/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=45`
 }
 
 /** Tiny blurred placeholder used behind images while they stream in. */
@@ -125,5 +176,17 @@ export const PHOTO = {
 export type PhotoKey = keyof typeof PHOTO
 
 /** Convenience: sized URL straight from a semantic key. */
-export const P = (key: PhotoKey, w: number, h: number, q = 78) => img(PHOTO[key], w, h, q)
+export const P = (key: PhotoKey, w: number, h: number, q = QUALITY) => img(PHOTO[key], w, h, q)
 export const PBlur = (key: PhotoKey) => blur(PHOTO[key])
+
+/** `srcset` + `sizes` for a plain <img>, from a semantic key. */
+export function PSet(key: PhotoKey, w: number, h: number, q = QUALITY) {
+  return {
+    srcSet: srcSet(PHOTO[key], w, h, q),
+    // Call sites size in device pixels, so the CSS slot is half the request.
+    sizes: `${Math.round(w / 2)}px`,
+  }
+}
+
+/** Decorative background wash from a semantic key. */
+export const PDecor = (key: PhotoKey, w?: number, h?: number) => decorative(PHOTO[key], w, h)

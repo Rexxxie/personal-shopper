@@ -6,7 +6,7 @@ import { ButtonLink } from '@/components/ui/Button'
 import { Blobs, Chip, Tilt } from '@/components/ui/primitives'
 import { Img } from '@/components/ui/Img'
 import { Marquee } from '@/components/ui/Marquee'
-import { P } from '@/data/images'
+import { P, PDecor } from '@/data/images'
 import { EASE } from '@/lib/motion'
 import { useIsDesktop } from '@/lib/useMediaQuery'
 import { naira } from '@/lib/utils'
@@ -61,7 +61,7 @@ export function Hero() {
 
       {/* faint market photo washed into the background */}
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.055]" aria-hidden>
-        <img src={P('marketAerial', 1600, 1000)} alt="" className="h-full w-full object-cover" />
+        <img src={PDecor('marketAerial', 400, 250)} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
       </div>
 
       {/*

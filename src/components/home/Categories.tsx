@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Check, Plus } from 'lucide-react'
 import { CATEGORIES, BUNDLES, PRODUCTS } from '@/data/catalog'
 import { MARKETS } from '@/data/markets'
-import { P } from '@/data/images'
+import { P, PSet } from '@/data/images'
 import { Eyebrow, Section } from '@/components/ui/primitives'
 import { TextReveal, FadeText } from '@/components/ui/TextReveal'
 import { RevealGroup, RevealItem, Reveal } from '@/components/ui/Reveal'
@@ -95,7 +95,8 @@ function CategoryCard({
     >
       <div className={cn('relative w-full', aspect)}>
         <img
-          src={P(category.photo, wide ? 900 : 560, wide ? 700 : 700)}
+          src={P(category.photo, wide ? 900 : 560, 700)}
+          {...PSet(category.photo, wide ? 900 : 560, 700)}
           alt=""
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.09]"
@@ -185,6 +186,7 @@ function BundleCard({ bundle }: { bundle: (typeof BUNDLES)[number] }) {
       <div className="relative aspect-[16/10] overflow-hidden">
         <img
           src={P(bundle.photo, 620, 400)}
+          {...PSet(bundle.photo, 620, 400)}
           alt=""
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
@@ -316,6 +318,7 @@ function MarketRail() {
             <div className="relative aspect-[3/4]">
               <img
                 src={P(m.photo, 640, 850)}
+                {...PSet(m.photo, 640, 850)}
                 alt={`${m.name}, ${m.area}`}
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"

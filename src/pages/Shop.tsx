@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Check, Plus, Search, SlidersHorizontal, ShoppingBasket, X, Sparkles } from 'lucide-react'
 import { CATEGORIES, PRODUCTS, BUNDLES, type Product } from '@/data/catalog'
-import { P } from '@/data/images'
+import { P, PSet } from '@/data/images'
 import { useList } from '@/store/list'
 import { naira, cn } from '@/lib/utils'
 import { EASE, popIn, spring } from '@/lib/motion'
@@ -328,6 +328,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={P(product.photo, 480, 360)}
+          {...PSet(product.photo, 480, 360)}
           alt={product.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
@@ -417,6 +418,7 @@ function QuickBundle({ bundle }: { bundle: (typeof BUNDLES)[number] }) {
       <div className="relative aspect-[16/10]">
         <img
           src={P(bundle.photo, 520, 330)}
+          {...PSet(bundle.photo, 520, 330)}
           alt=""
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1s] group-hover:scale-110"

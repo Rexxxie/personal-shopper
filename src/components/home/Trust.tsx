@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { STATS, FEATURES, OFFICE_PAINS } from '@/data/content'
-import { P } from '@/data/images'
+import { PDecor } from '@/data/images'
 import { Counter } from '@/components/ui/Counter'
 import { Eyebrow, Section, Blobs } from '@/components/ui/primitives'
 import { TextReveal, FadeText } from '@/components/ui/TextReveal'
@@ -111,7 +111,7 @@ export function OfficeSection() {
   return (
     <Section tone="dark" className="grain relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 opacity-[0.07]" aria-hidden>
-        <img src={P('marketStreetBusy', 1600, 900)} alt="" className="h-full w-full object-cover" />
+        <img src={PDecor('marketStreetBusy', 400, 225)} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
       </div>
 
       <div className="container-x relative">

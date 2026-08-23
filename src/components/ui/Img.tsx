@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, useState } from 'react'
-import { P, PBlur, type PhotoKey } from '@/data/images'
+import { P, PSet, PBlur, type PhotoKey } from '@/data/images'
 import { cn } from '@/lib/utils'
 import { EASE } from '@/lib/motion'
 
@@ -71,10 +71,12 @@ export function Img({
       >
         <motion.img
           src={P(photo, w, h)}
+          {...PSet(photo, w, h)}
           alt={alt}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
           fetchPriority={priority ? 'high' : 'auto'}
+          // An explicit `sizes` from the call site wins over the derived one.
           sizes={sizes}
           onLoad={() => setLoaded(true)}
           className={cn('h-full w-full object-cover', imgClassName)}
