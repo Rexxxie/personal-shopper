@@ -29,3 +29,6 @@ dist-ssr
 
 # Per-machine Claude Code permissions, not shared
 .claude/settings.local.json
+
+# Claude Code workspace files
+.claude/
