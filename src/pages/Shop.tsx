@@ -88,13 +88,13 @@ export default function Shop() {
           {/* search + custom add */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+              <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search rice, tomatoes, palm oil, pampers…"
                 aria-label="Search the market"
-                className="h-[3.4rem] w-full rounded-full bg-cream-50 pl-12 pr-11 text-[0.95rem] shadow-soft ring-1 ring-inset ring-brand-900/8 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+                className="h-[3.4rem] w-full rounded-full bg-cream-50 pl-12 pr-11 text-[0.95rem] shadow-soft ring-1 ring-inset ring-brand-900/8 placeholder:text-ink-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
               />
               <AnimatePresence>
                 {query && (
@@ -103,7 +103,7 @@ export default function Shop() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.6 }}
                     onClick={() => setQuery('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-ink-400 transition-colors hover:bg-brand-900/6 hover:text-brand-900"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-ink-500 transition-colors hover:bg-brand-900/6 hover:text-brand-900"
                     aria-label="Clear search"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -127,7 +127,7 @@ export default function Shop() {
                 onChange={(e) => setCustomText(e.target.value)}
                 placeholder="Can’t find it? Type it…"
                 aria-label="Add a custom item to your list"
-                className="h-[3.4rem] min-w-0 flex-1 rounded-full bg-brand-900/5 px-5 text-[0.92rem] ring-1 ring-inset ring-brand-900/8 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+                className="h-[3.4rem] min-w-0 flex-1 rounded-full bg-brand-900/5 px-5 text-[0.92rem] ring-1 ring-inset ring-brand-900/8 placeholder:text-ink-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
               />
               <button
                 type="submit"
@@ -333,7 +333,7 @@ export function ProductCard({ product }: { product: Product }) {
           className="h-full w-full object-cover transition-transform duration-[1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
         />
         {product.popular && (
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-accent-500 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wider text-white">
+          <span className="absolute left-2.5 top-2.5 rounded-full bg-accent-500 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wider text-brand-950">
             Popular
           </span>
         )}
@@ -372,7 +372,7 @@ export function ProductCard({ product }: { product: Product }) {
         */}
         <div className="mt-auto flex flex-col gap-2.5 pt-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[0.62rem] uppercase tracking-wider text-ink-400">Market price</p>
+            <p className="text-[0.62rem] uppercase tracking-wider text-ink-500">Market price</p>
             <p className="font-display text-[1.1rem] font-extrabold tabular-nums leading-tight text-brand-900">
               {naira(product.price)}
             </p>
@@ -429,7 +429,7 @@ function QuickBundle({ bundle }: { bundle: (typeof BUNDLES)[number] }) {
         <span
           className={cn(
             'absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300',
-            added ? 'bg-brand-500 text-white' : 'bg-cream-100/90 text-brand-900 group-hover:bg-accent-500 group-hover:text-white',
+            added ? 'bg-brand-500 text-white' : 'bg-cream-100/90 text-brand-900 group-hover:bg-accent-500 group-hover:text-brand-950',
           )}
         >
           {added ? <Check className="h-4 w-4" strokeWidth={3} /> : <Plus className="h-4 w-4" />}

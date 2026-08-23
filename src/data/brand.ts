@@ -21,8 +21,16 @@ export const BRAND = {
   country: 'Nigeria',
   phone: '+234 800 000 0000',
   phoneHref: 'tel:+2348000000000',
-  whatsapp: '2348000000000',
   email: 'hello@ojami.ng',
+  /**
+   * tawk.to live chat embed URL — this is the site's contact channel. Orders,
+   * office enquiries and shopper applications all land in it, so a customer is
+   * never pushed out to another app mid-checkout.
+   * tawk.to → Administration → Chat Widget → copy the `src` out of the snippet.
+   * Public by design (it ships in the page source), so it belongs here rather
+   * than in an env var. Leave the placeholder and the button won't render.
+   */
+  tawk: 'https://embed.tawk.to/5ba12df7c9abba579677aa74/default',
   address: 'Bodija, Ibadan, Oyo State',
   hours: 'Mon – Sat, 6:00am – 8:00pm',
   social: {

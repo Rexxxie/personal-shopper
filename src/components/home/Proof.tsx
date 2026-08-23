@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { ArrowRight, Check, Minus, Plus, Smartphone, Bell, MapPinned, Repeat } from 'lucide-react'
 import { TESTIMONIALS, FAQS, PLANS } from '@/data/content'
 import { P } from '@/data/images'
-import { BRAND } from '@/data/brand'
 import { Eyebrow, Section, Stars, Chip, Blobs, Tilt } from '@/components/ui/primitives'
 import { TextReveal, FadeText } from '@/components/ui/TextReveal'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal'
 import { Marquee } from '@/components/ui/Marquee'
-import { ButtonLink } from '@/components/ui/Button'
+import { Button, ButtonLink } from '@/components/ui/Button'
+import { openTawk } from '@/lib/tawk'
 import { popIn, EASE, spring } from '@/lib/motion'
 import { naira, cn } from '@/lib/utils'
 
@@ -98,7 +98,7 @@ export function PricingTeaser() {
         <Reveal className="mt-10 text-center" delay={0.1}>
           <p className="text-[0.88rem] text-ink-500">
             Plus a flat delivery fee of ₦1,000–₦2,500 depending on your area.{' '}
-            <a href="/pricing" className="font-semibold text-brand-700 underline decoration-brand-500/40 underline-offset-4 transition-colors hover:text-accent-600">
+            <a href="/pricing" className="font-semibold text-brand-700 underline decoration-brand-500/40 underline-offset-4 transition-colors hover:text-accent-700">
               See the full breakdown
             </a>
           </p>
@@ -123,7 +123,7 @@ export function PlanCard({ plan }: { plan: (typeof PLANS)[number] }) {
       {plan.featured && (
         <>
           <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-accent-500/25 blur-3xl" />
-          <span className="absolute right-5 top-5 rounded-full bg-accent-500 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white">
+          <span className="absolute right-5 top-5 rounded-full bg-accent-500 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-brand-950">
             Most popular
           </span>
         </>
@@ -284,7 +284,7 @@ function WaitlistForm() {
         />
         <button
           type="submit"
-          className="inline-flex h-[3.4rem] shrink-0 items-center gap-2 rounded-full bg-accent-500 px-6 text-[0.92rem] font-bold text-white transition-all duration-300 hover:bg-accent-600 active:scale-95"
+          className="inline-flex h-[3.4rem] shrink-0 items-center gap-2 rounded-full bg-accent-500 px-6 text-[0.92rem] font-bold text-brand-950 transition-all duration-300 hover:bg-accent-400 active:scale-95"
         >
           {sent ? <Check className="h-4 w-4" /> : <Smartphone className="h-4 w-4" />}
           {sent ? 'On the list' : 'Notify me'}
@@ -354,7 +354,7 @@ function PhoneMockup() {
                     <span
                       className={cn(
                         'flex h-6 w-6 shrink-0 items-center justify-center rounded-full',
-                        item.done ? 'bg-brand-500 text-white' : 'bg-brand-900/8 text-ink-400',
+                        item.done ? 'bg-brand-500 text-white' : 'bg-brand-900/8 text-ink-500',
                       )}
                     >
                       <Check className="h-3 w-3" strokeWidth={3} />
@@ -391,7 +391,7 @@ function PhoneMockup() {
                       className="h-full origin-left bg-accent-500"
                     />
                   </div>
-                  <p className="mt-1.5 text-[0.55rem] text-cream-100/45">Budget cap {naira(60000)}</p>
+                  <p className="mt-1.5 text-[0.55rem] text-cream-100/60">Budget cap {naira(60000)}</p>
                 </motion.div>
               </div>
             </div>
@@ -439,18 +439,18 @@ export function Faq() {
               className="mt-4 text-h1 font-extrabold text-brand-950"
             />
             <FadeText className="mt-6 text-[1rem] leading-relaxed text-ink-600" delay={0.15}>
-              Still unsure about something? Message us on WhatsApp — a real person in Ibadan answers, usually
-              within a few minutes.
+              Still unsure about something? Open the chat — a real person in Ibadan answers, usually within a
+              few minutes.
             </FadeText>
             <Reveal className="mt-7" delay={0.1}>
-              <ButtonLink
-                to={`https://wa.me/${BRAND.whatsapp}`}
+              <Button
+                onClick={openTawk}
                 variant="outline"
                 size="md"
                 icon={<ArrowRight className="h-4 w-4" />}
               >
                 Ask us anything
-              </ButtonLink>
+              </Button>
             </Reveal>
           </div>
 
@@ -545,14 +545,14 @@ export function FinalCta() {
                 <ButtonLink to="/shop" variant="accent" size="lg" icon={<ArrowRight className="h-4 w-4" />}>
                   Send your market list
                 </ButtonLink>
-                <ButtonLink to={`https://wa.me/${BRAND.whatsapp}`} variant="light" size="lg">
-                  Chat on WhatsApp
-                </ButtonLink>
+                <Button onClick={openTawk} variant="light" size="lg">
+                  Talk to us first
+                </Button>
               </div>
             </Reveal>
 
             <Reveal className="mt-8" delay={0.25}>
-              <p className="text-[0.82rem] text-cream-100/45">
+              <p className="text-[0.82rem] text-cream-100/60">
                 Same-day delivery across Ibadan · Trader receipts on every run · Free cancellation before we buy
               </p>
             </Reveal>

@@ -10,14 +10,16 @@ import { ChoiceRow, Field, TextArea } from '@/components/ui/Form'
 import { emailRule, optional, phoneRule, required, useFields } from '@/lib/form'
 import { BRAND } from '@/data/brand'
 import { popIn, EASE } from '@/lib/motion'
-import { bold, composeMessage, labelled, normalisePhone, openWhatsApp } from '@/lib/whatsapp'
+import { composeMessage, labelled, normalisePhone } from '@/lib/validate'
+import { submitToChat, openTawk, tawkEnabled } from '@/lib/tawk'
 
 const CHANNELS = [
   {
     icon: MessageCircle,
-    label: 'WhatsApp',
+    label: 'Live chat',
     value: 'Fastest — usually under 5 minutes',
-    href: `https://wa.me/${BRAND.whatsapp}`,
+    onClick: openTawk,
+    hidden: !tawkEnabled,
     accent: true,
   },
   { icon: Phone, label: 'Call us', value: BRAND.phone, href: BRAND.phoneHref },
@@ -32,7 +34,7 @@ export default function Contact() {
       <PageHeader
         eyebrow="Contact"
         title={'A real person in Ibadan\nwill *answer you*.'}
-        lead="No ticket system, no bot that misunderstands you. WhatsApp is the fastest way to reach us, and there is almost always somebody on it during market hours."
+        lead="No ticket system, no bot that misunderstands you. Live chat is the fastest way to reach us, and there is almost always somebody on it during market hours."
       />
 
       <Section tone="cream" className="grain !pt-4">
@@ -41,20 +43,20 @@ export default function Contact() {
             {/* channels */}
             <div>
               <RevealGroup className="space-y-2.5" gap={0.07}>
-                {CHANNELS.map((c) => {
+                {CHANNELS.filter((c) => !c.hidden).map((c) => {
                   const Inner = (
                     <motion.div
                       whileHover={{ y: -4 }}
                       transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-                      className={`group flex items-center gap-4 rounded-2xl p-5 ring-1 ring-inset transition-shadow duration-400 ${
+                      className={`group flex w-full items-center gap-4 rounded-2xl p-5 text-left ring-1 ring-inset transition-shadow duration-400 ${
                         c.accent
-                          ? 'bg-[#25D366]/10 ring-[#25D366]/25 hover:shadow-soft'
+                          ? 'bg-brand-500/10 ring-brand-600/25 hover:shadow-soft'
                           : 'bg-cream-50 ring-brand-900/8 hover:shadow-soft'
                       }`}
                     >
                       <span
                         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-400 group-hover:rotate-6 ${
-                          c.accent ? 'bg-[#25D366] text-white' : 'bg-brand-900 text-cream-100'
+                          c.accent ? 'bg-brand-600 text-white' : 'bg-brand-900 text-cream-100'
                         }`}
                       >
                         <c.icon className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.8} />
@@ -68,13 +70,12 @@ export default function Contact() {
 
                   return (
                     <RevealItem key={c.label} variants={popIn}>
-                      {c.href ? (
-                        <a
-                          href={c.href}
-                          target={c.href.startsWith('http') ? '_blank' : undefined}
-                          rel={c.href.startsWith('http') ? 'noreferrer noopener' : undefined}
-                          className="block"
-                        >
+                      {c.onClick ? (
+                        <button type="button" onClick={c.onClick} className="block w-full">
+                          {Inner}
+                        </button>
+                      ) : c.href ? (
+                        <a href={c.href} className="block">
                           {Inner}
                         </a>
                       ) : (
@@ -113,7 +114,7 @@ function ContactForm() {
   const [topic, setTopic] = useState(TOPICS[0])
   const form = useFields({ name: '', phone: '', email: '', area: '', message: '' })
 
-  const submit = () => {
+  const submit = async () => {
     const valid = form.validate({
       name: required('Tell us who you are'),
       phone: phoneRule(),
@@ -123,12 +124,13 @@ function ContactForm() {
     if (!valid) return
 
     const { values } = form
-    openWhatsApp(
-      composeMessage([
-        bold(topic),
+    await submitToChat({
+      subject: `Contact — ${topic}`,
+      body: composeMessage([
+        topic.toUpperCase(),
         [
-          `${bold('Name')}: ${values.name}`,
-          `${bold('Phone')}: ${normalisePhone(values.phone)}`,
+          `Name: ${values.name}`,
+          `Phone: ${normalisePhone(values.phone)}`,
           labelled('Email', values.email.trim()),
           labelled('Area', values.area.trim()),
         ]
@@ -137,7 +139,10 @@ function ContactForm() {
         values.message.trim(),
         'Sent from the Ojàmi website.',
       ]),
-    )
+      visitor: { name: values.name, phone: values.phone, email: values.email.trim() || undefined },
+      meta: { topic, area: values.area.trim() || '—' },
+      tags: ['contact'],
+    })
     setSent(true)
   }
 
@@ -165,10 +170,10 @@ function ContactForm() {
             >
               <Check className="h-8 w-8" strokeWidth={2.5} />
             </motion.span>
-            <h3 className="mt-6 font-display text-2xl font-bold text-brand-950">Over to WhatsApp</h3>
+            <h3 className="mt-6 font-display text-2xl font-bold text-brand-950">Over to the chat</h3>
             <p className="mt-3 max-w-sm text-[0.95rem] leading-relaxed text-ink-600">
-              Your message is waiting in WhatsApp — press send and somebody picks it up, usually within a few
-              minutes during market hours.
+              Your message is copied and the chat is open — paste it in and somebody picks it up, usually
+              within a few minutes during market hours.
             </p>
             <Button
               type="button"
@@ -243,7 +248,7 @@ function ContactForm() {
             />
 
             <Button type="submit" variant="accent" size="lg" full magnetic={false}>
-              Send on WhatsApp
+              Send message
             </Button>
           </div>
         )}

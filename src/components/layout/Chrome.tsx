@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useMotionValue, useScroll, useSpring } from 'm
 import { useEffect, useState } from 'react'
 import { EASE } from '@/lib/motion'
 import { BRAND } from '@/data/brand'
+import { loadTawk, onTawkVisibility, openTawk, tawkEnabled } from '@/lib/tawk'
 import { LogoMark } from './Logo'
 
 /* ------------------------------------------------------- Scroll progress */
@@ -110,7 +111,7 @@ export function Preloader() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.28, duration: 0.32 }}
-              className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-cream-100/45"
+              className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-cream-100/60"
             >
               Heading to the market
             </motion.p>
@@ -195,38 +196,61 @@ export function Cursor() {
   )
 }
 
-/* ---------------------------------------------------- Floating WhatsApp */
+/* ------------------------------------------------------ Floating support */
 
-export function WhatsAppFab() {
-  const [show, setShow] = useState(false)
-  const { scrollYProgress } = useScroll()
+/**
+ * Branded launcher for the tawk.to live chat. tawk's own bubble stays hidden
+ * (see `lib/tawk.ts`) so the entry point matches the rest of the site.
+ *
+ * Deliberately does *not* wait for scroll: this is the site's contact channel,
+ * that one was an order hand-off, this is support, and someone stuck on the
+ * hero shouldn't have to scroll to find help. It only hides while the chat
+ * panel itself is open, so it doesn't sit on top of it.
+ */
+export function SupportFab() {
+  const [chatOpen, setChatOpen] = useState(false)
 
-  useEffect(() => scrollYProgress.on('change', (v) => setShow(v > 0.12)), [scrollYProgress])
+  useEffect(() => {
+    loadTawk()
+    return onTawkVisibility(setChatOpen)
+  }, [])
+
+  // No property ID configured — don't dangle a button that opens nothing.
+  if (!tawkEnabled) return null
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.a
-          href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
-            `Hi ${BRAND.name}, I'd like to send a market list.`,
-          )}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          initial={{ scale: 0, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0, opacity: 0, y: 20 }}
-          whileHover={{ scale: 1.07 }}
-          whileTap={{ scale: 0.94 }}
-          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-          className="fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(37,211,102,0.7)] sm:bottom-7 sm:right-7"
-          aria-label="Chat with us on WhatsApp"
-        >
-          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-[#25D366]/45" aria-hidden />
-          <svg viewBox="0 0 24 24" className="relative h-7 w-7" fill="currentColor">
-            <path d="M17.47 14.38c-.3-.15-1.74-.86-2-.96-.27-.1-.47-.15-.66.15s-.76.96-.93 1.15-.34.22-.63.08a8.13 8.13 0 0 1-2.4-1.48 9 9 0 0 1-1.66-2.06c-.17-.3 0-.46.13-.6l.45-.53a2 2 0 0 0 .3-.5.55.55 0 0 0 0-.52c-.08-.15-.66-1.6-.9-2.18s-.48-.5-.66-.51h-.57a1.1 1.1 0 0 0-.79.36 3.3 3.3 0 0 0-1.03 2.45 5.72 5.72 0 0 0 1.2 3.04 13.1 13.1 0 0 0 5.02 4.43c.7.3 1.25.48 1.68.62a4 4 0 0 0 1.85.12 3.03 3.03 0 0 0 2-1.4 2.46 2.46 0 0 0 .17-1.4c-.07-.13-.27-.2-.56-.35zM12.05 21.8h-.02a9.8 9.8 0 0 1-4.99-1.36l-.36-.21-3.7.97.99-3.62-.24-.37a9.77 9.77 0 0 1-1.5-5.22 9.83 9.83 0 1 1 9.82 9.81zM20.4 3.6A11.8 11.8 0 0 0 1.98 17.85L.3 24l6.3-1.65a11.76 11.76 0 0 0 5.65 1.44h.01A11.8 11.8 0 0 0 20.4 3.6z" />
-          </svg>
-        </motion.a>
-      )}
-    </AnimatePresence>
+    <motion.button
+      type="button"
+      onClick={openTawk}
+      initial={{ scale: 0, opacity: 0, y: 20 }}
+      // Animated in place rather than mounted/unmounted through AnimatePresence:
+      // an exiting child is left in the DOM here, which would leave an invisible
+      // but still tabbable button sitting over the open chat panel.
+      animate={chatOpen ? { scale: 0, opacity: 0, y: 20 } : { scale: 1, opacity: 1, y: 0 }}
+      whileHover={chatOpen ? undefined : { scale: 1.07 }}
+      whileTap={chatOpen ? undefined : { scale: 0.94 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+      className={`fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-[0_10px_30px_-8px_rgba(23,160,90,0.7)] sm:bottom-7 sm:right-7 ${
+        chatOpen ? 'pointer-events-none' : ''
+      }`}
+      aria-label={`Chat with ${BRAND.name} support`}
+      aria-hidden={chatOpen}
+      tabIndex={chatOpen ? -1 : 0}
+    >
+      <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/45" aria-hidden />
+      <svg
+        viewBox="0 0 24 24"
+        className="relative h-7 w-7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M20.5 11.6a7.9 7.9 0 0 1-8.5 7.9 9 9 0 0 1-2.6-.45L4.2 20.8l1.36-4.1a7.7 7.7 0 0 1-1.56-4.66 7.9 7.9 0 0 1 8.5-7.85 8 8 0 0 1 7.9 7.41z" />
+        <path d="M8.7 11.8h.01M12.3 11.8h.01M15.9 11.8h.01" />
+      </svg>
+    </motion.button>
   )
 }

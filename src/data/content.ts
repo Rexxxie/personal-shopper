@@ -164,7 +164,7 @@ export const PLANS: Plan[] = [
       'One dedicated shopper who learns your list',
       'Reception drop-off at your office',
       'Monthly invoice + itemised statement',
-      'WhatsApp line that answers in minutes',
+      'Priority chat line that answers in minutes',
     ],
   },
 ]

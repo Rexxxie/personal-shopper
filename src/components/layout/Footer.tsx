@@ -84,7 +84,7 @@ export function Footer() {
             {COLUMNS.map((col) => (
               <RevealGroup key={col.title}>
                 <RevealItem>
-                  <h4 className="eyebrow text-cream-100/40">{col.title}</h4>
+                  <h4 className="eyebrow text-cream-100/60">{col.title}</h4>
                 </RevealItem>
                 <ul className="mt-5 space-y-3">
                   {col.links.map((l) => (
@@ -113,7 +113,7 @@ export function Footer() {
 
         {/* ---------------------------------------------- categories ---- */}
         <div className="border-b border-cream-100/10 py-10">
-          <h4 className="eyebrow mb-5 text-cream-100/40">What we shop for</h4>
+          <h4 className="eyebrow mb-5 text-cream-100/60">What we shop for</h4>
           <RevealGroup className="flex flex-wrap gap-2" gap={0.03}>
             {CATEGORIES.map((c) => (
               <RevealItem key={c.id}>
@@ -131,8 +131,8 @@ export function Footer() {
 
         {/* --------------------------------------------------- zones ---- */}
         <div className="border-b border-cream-100/10 py-10">
-          <h4 className="eyebrow mb-5 text-cream-100/40">Delivering across Ibadan</h4>
-          <p className="flex flex-wrap gap-x-1.5 gap-y-2 text-[0.85rem] text-cream-100/45">
+          <h4 className="eyebrow mb-5 text-cream-100/60">Delivering across Ibadan</h4>
+          <p className="flex flex-wrap gap-x-1.5 gap-y-2 text-[0.85rem] text-cream-100/60">
             {ZONES.map((z, i) => (
               <span key={z.name}>
                 <span className="transition-colors hover:text-cream-100/85">{z.name}</span>
@@ -157,7 +157,7 @@ export function Footer() {
         </motion.div>
 
         {/* -------------------------------------------------- bottom ---- */}
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-cream-100/10 py-7 text-[0.78rem] text-cream-100/40 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-cream-100/10 py-7 text-[0.78rem] text-cream-100/60 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {BRAND.name}. Built in {BRAND.city}, {BRAND.country}.
           </p>

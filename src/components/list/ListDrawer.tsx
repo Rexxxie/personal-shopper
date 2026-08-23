@@ -115,7 +115,7 @@ export function ListDrawer() {
                               </div>
                               <button
                                 onClick={() => remove(line.productId)}
-                                className="shrink-0 rounded-lg p-1.5 text-ink-400 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 focus-visible:opacity-100 group-hover:opacity-100"
+                                className="shrink-0 rounded-lg p-1.5 text-ink-500 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 focus-visible:opacity-100 group-hover:opacity-100"
                                 aria-label={`Remove ${line.product.name}`}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
@@ -144,7 +144,7 @@ export function ListDrawer() {
                               onChange={(e) => setNote(line.productId, e.target.value)}
                               onBlur={() => setNoteFor(null)}
                               placeholder="Note for your shopper — “small size”, “cut in two”…"
-                              className="w-full rounded-xl bg-brand-900/4 px-3 py-2 text-[0.78rem] text-ink-700 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                              className="w-full rounded-xl bg-brand-900/4 px-3 py-2 text-[0.78rem] text-ink-700 placeholder:text-ink-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
                             />
                           ) : (
                             <button
@@ -179,7 +179,7 @@ export function ListDrawer() {
                         <Stepper value={c.qty} onChange={(v) => setCustomQty(c.id, v)} label={c.text} />
                         <button
                           onClick={() => removeCustom(c.id)}
-                          className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                          className="rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-red-50 hover:text-red-500"
                           aria-label={`Remove ${c.text}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -202,7 +202,7 @@ export function ListDrawer() {
                       onChange={(e) => setCustomText(e.target.value)}
                       placeholder="Not in our list? Type it here…"
                       aria-label="Add a custom item"
-                      className="h-11 min-w-0 flex-1 rounded-full bg-brand-900/5 px-4 text-[0.85rem] placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                      className="h-11 min-w-0 flex-1 rounded-full bg-brand-900/5 px-4 text-[0.85rem] placeholder:text-ink-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
                     />
                     <button
                       type="submit"
@@ -215,7 +215,7 @@ export function ListDrawer() {
 
                   <button
                     onClick={clear}
-                    className="pt-2 text-[0.76rem] font-medium text-ink-400 transition-colors hover:text-red-500"
+                    className="pt-2 text-[0.76rem] font-medium text-ink-500 transition-colors hover:text-red-500"
                   >
                     Clear the whole list
                   </button>

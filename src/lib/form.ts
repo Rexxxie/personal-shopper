@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { isEmail, isPhone } from '@/lib/whatsapp'
+import { isEmail, isPhone } from '@/lib/validate'
 
 /* ============================================================================
    FORM STATE + VALIDATION

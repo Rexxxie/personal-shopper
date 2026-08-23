@@ -59,6 +59,13 @@ storage exists it goes *alongside* the hand-off, not instead of it.
 - `src/lib/form.ts` — `useFields` state + validation rules
 - `src/components/ui/Form.tsx` — `<Field>`, `<TextArea>`, `<ChoiceRow>`, `<MultiChoiceRow>`
 
+*Support* is separate from orders: the floating button opens **tawk.to** live
+chat, so a visitor with a question stays on the site instead of being pushed
+into WhatsApp. Set `BRAND.tawk` in `src/data/brand.ts` to the embed URL from
+tawk.to → Administration → Chat Widget; leave the placeholder and the button
+doesn't render at all. Wiring lives in `src/lib/tawk.ts` — tawk's own bubble is
+hidden and driven from our own FAB instead.
+
 Long lists are handled: past ~1,800 characters the message drops per-item price
 estimates (the shopper re-prices at the stall anyway) so the `wa.me` pre-fill
 doesn't get silently truncated, and the confirmation screen always offers a
@@ -158,7 +165,7 @@ comes from a small shared vocabulary instead of ad-hoc transitions.
   parallax. One component so imagery always arrives the same way.
 - `src/components/ui/Button.tsx` — magnetic buttons that drift toward the cursor.
 - `src/components/layout/Chrome.tsx` — preloader, scroll progress, custom cursor,
-  WhatsApp FAB.
+  support FAB.
 
 Everything respects `prefers-reduced-motion`: Lenis doesn't initialise, the
 custom cursor doesn't mount, the preloader never shows, counters jump straight to

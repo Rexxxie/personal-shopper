@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'motion/react'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { ArrowRight, BadgeCheck, Camera, MapPin, Play } from 'lucide-react'
 import { TextReveal } from '@/components/ui/TextReveal'
 import { ButtonLink } from '@/components/ui/Button'
@@ -34,6 +34,7 @@ const AVATARS = ['personWomanSmiling', 'officeManSuit', 'personWomanWrap', 'pers
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const isDesktop = useIsDesktop()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
 
@@ -41,6 +42,18 @@ export function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 140])
   const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94])
+
+  /*
+   * Motion writes opacity/transform straight onto the node, and dropping the
+   * `style` prop does not clear what it already wrote. Shrinking a desktop
+   * window past the breakpoint mid-page therefore stranded the hero at
+   * opacity 0 — headline, copy and CTA all invisible. Clear it by hand.
+   */
+  useEffect(() => {
+    if (isDesktop || !wrapRef.current) return
+    wrapRef.current.style.opacity = ''
+    wrapRef.current.style.transform = ''
+  }, [isDesktop])
 
   return (
     <section ref={ref} className="grain relative overflow-hidden pb-0 pt-[7.5rem] sm:pt-[8.5rem] lg:pt-[9.5rem]">
@@ -56,7 +69,7 @@ export function Hero() {
         viewports tall, so the same progress curve dims the copy while the user
         is still reading it.
       */}
-      <motion.div style={isDesktop ? { y, opacity, scale } : undefined} className="container-x">
+      <motion.div ref={wrapRef} style={isDesktop ? { y, opacity, scale } : undefined} className="container-x">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 xl:gap-20">
           {/* ------------------------------------------------- copy ---- */}
           <div className="relative z-10">
@@ -66,7 +79,7 @@ export function Hero() {
               transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
               className="mb-6 inline-flex items-center gap-2 rounded-full bg-brand-900/6 py-1.5 pl-1.5 pr-4 ring-1 ring-inset ring-brand-900/8"
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-500 px-2.5 py-1 text-[0.66rem] font-bold uppercase tracking-[0.12em] text-white">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-500 px-2.5 py-1 text-[0.66rem] font-bold uppercase tracking-[0.12em] text-brand-950">
                 <MapPin className="h-3 w-3" />
                 Ibadan
               </span>
@@ -268,7 +281,7 @@ function HeroCollage() {
             transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
             className="glass flex items-center gap-2.5 rounded-full py-2 pl-2 pr-4 shadow-lift ring-1 ring-inset ring-brand-900/8"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-500 text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-500 text-brand-950">
               <Camera className="h-4 w-4" />
             </span>
             <div className="leading-tight">

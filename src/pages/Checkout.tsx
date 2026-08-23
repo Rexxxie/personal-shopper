@@ -9,7 +9,7 @@ import { P } from '@/data/images'
 import { naira, cn } from '@/lib/utils'
 import { EASE } from '@/lib/motion'
 import { buildOrderMessage } from '@/lib/orderMessage'
-import { openWhatsApp } from '@/lib/whatsapp'
+import { submitToChat, tawkEnabled, openTawk, type SubmitOutcome } from '@/lib/tawk'
 import { Eyebrow, Chip } from '@/components/ui/primitives'
 import { Button, ButtonLink } from '@/components/ui/Button'
 import { Field, TextArea } from '@/components/ui/Form'
@@ -17,7 +17,7 @@ import { phoneRule, required, useFields } from '@/lib/form'
 
 const STEPS = ['Your list', 'Delivery', 'Confirm'] as const
 
-/** Short, human-readable, and stable enough to quote back over WhatsApp. */
+/** Short, human-readable, and stable enough for a customer to quote back. */
 function makeReference() {
   return `OJA-${String(Math.floor(Date.now() / 1000)).slice(-6)}`
 }
@@ -32,8 +32,10 @@ interface SentOrder {
   total: number
   totalIsPartial: boolean
   zoneName: string
-  /** Kept so the customer can re-copy it if the WhatsApp hand-off went wrong. */
+  /** Kept so the customer can re-copy it if the hand-off went wrong. */
   message: string
+  /** Whether the chat actually opened, so the screen can say the right thing. */
+  outcome: SubmitOutcome
 }
 
 /** Only the parts of the form object step 3 actually renders. */
@@ -57,7 +59,7 @@ export default function Checkout() {
     setStep(next)
   }
 
-  const submit = () => {
+  const submit = async () => {
     // Enter inside a quantity box on an earlier step would otherwise land here.
     if (step !== STEPS.length - 1) return
 
@@ -97,7 +99,21 @@ export default function Checkout() {
         budgetCap: list.state.budgetCap,
     })
 
-    openWhatsApp(message)
+    // Awaited before the screen swaps: the clipboard write inside needs to stay
+    // within this user gesture, and the confirmation copy depends on the result.
+    const outcome = await submitToChat({
+      subject: `New market list — ${reference}`,
+      body: message,
+      visitor: { name: form.values.name, phone: form.values.phone },
+      meta: {
+        reference,
+        deliverTo: list.zone.name,
+        plan: list.plan.name,
+        estimate: naira(list.total),
+        items: String(list.count),
+      },
+      tags: ['order'],
+    })
 
     setSent({
       reference,
@@ -105,6 +121,7 @@ export default function Checkout() {
       totalIsPartial: list.totalIsPartial,
       zoneName: list.zone.name,
       message,
+      outcome,
     })
     // The list has left the building — don't leave it sitting here to re-send.
     list.clear()
@@ -152,7 +169,7 @@ export default function Checkout() {
               <span
                 className={cn(
                   'text-[0.78rem] font-bold transition-colors sm:text-[0.85rem]',
-                  i <= step ? 'text-brand-900' : 'text-ink-400',
+                  i <= step ? 'text-brand-900' : 'text-ink-500',
                 )}
               >
                 <span className="mr-1.5 tabular-nums">{i + 1}.</span>
@@ -211,7 +228,7 @@ export default function Checkout() {
                   icon={<ArrowRight className="h-4 w-4" />}
                   className="flex-1 sm:flex-none"
                 >
-                  Send list on WhatsApp
+                  Send my list
                 </Button>
               )}
             </div>
@@ -267,7 +284,7 @@ function StepList() {
               <button
                 type="button"
                 onClick={() => remove(l.productId)}
-                className="text-[0.72rem] font-semibold text-ink-400 transition-colors hover:text-red-500"
+                className="text-[0.72rem] font-semibold text-ink-500 transition-colors hover:text-red-500"
               >
                 Remove
               </button>
@@ -351,7 +368,7 @@ function StepDelivery() {
               <p className={cn('mt-0.5 text-[0.82rem]', state.slotId === s.id ? 'text-cream-100/70' : 'text-ink-600')}>
                 {s.window}
               </p>
-              <p className={cn('mt-1 text-[0.72rem]', state.slotId === s.id ? 'text-cream-100/50' : 'text-ink-400')}>
+              <p className={cn('mt-1 text-[0.72rem]', state.slotId === s.id ? 'text-cream-100/50' : 'text-ink-500')}>
                 {s.note}
               </p>
             </button>
@@ -444,7 +461,7 @@ function StepConfirm({ form }: { form: ContactForm }) {
       <div>
         <h2 className="text-h3 font-bold text-brand-950">Who should the shopper call?</h2>
         <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-600">
-          Nothing is charged now. Sending opens WhatsApp with your whole list ready — a shopper replies with
+          Nothing is charged now. Sending opens our chat with your whole list ready — a shopper replies with
           today’s real prices for you to approve first.
         </p>
       </div>
@@ -586,15 +603,20 @@ function OrderSummary() {
       </div>
 
       <p className="mt-4 px-1 text-[0.78rem] leading-relaxed text-ink-500">
-        Questions before you send it? Message us on{' '}
-        <a
-          href={`https://wa.me/${BRAND.whatsapp}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="font-semibold text-brand-700 underline underline-offset-2"
-        >
-          WhatsApp
-        </a>{' '}
+        Questions before you send it?{' '}
+        {tawkEnabled ? (
+          <button
+            type="button"
+            onClick={openTawk}
+            className="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-900"
+          >
+            Chat with us
+          </button>
+        ) : (
+          <a href={BRAND.phoneHref} className="font-semibold text-brand-700 underline underline-offset-2">
+            Call us
+          </a>
+        )}{' '}
         — a real person answers.
       </p>
     </aside>
@@ -646,7 +668,7 @@ function CopyListButton({ message }: { message: string }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2400)
     } catch {
-      // Denied clipboard permission or an insecure origin — the WhatsApp link
+      // Denied clipboard permission or an insecure origin — the email fallback
       // above is still there, so say nothing rather than throw an error at them.
     }
   }
@@ -678,8 +700,18 @@ function Success({ order }: { order: SentOrder }) {
 
         <h1 className="mt-8 text-h1 font-extrabold text-brand-950">Your list is ready to send</h1>
         <p className="mx-auto mt-4 max-w-md text-[1.05rem] leading-relaxed text-ink-600">
-          WhatsApp should have opened with your full list to {order.zoneName}. Press send there and a shopper
-          picks it up — you’ll get the fully costed list back to approve, usually within 20 minutes.
+          {order.outcome === 'chat' ? (
+            <>
+              The chat has opened with your details, and your full list is copied to your clipboard — paste
+              it in and hit send. A shopper picks it up from there and sends the fully costed list back to
+              approve, usually within 20 minutes.
+            </>
+          ) : (
+            <>
+              Your full list for {order.zoneName} is below. Send it to us and a shopper picks it up — you’ll
+              get the fully costed list back to approve, usually within 20 minutes.
+            </>
+          )}
         </p>
 
         <motion.div
@@ -705,16 +737,26 @@ function Success({ order }: { order: SentOrder }) {
 
         <div className="mx-auto mt-5 max-w-sm">
           <p className="text-[0.82rem] leading-relaxed text-ink-500">
-            WhatsApp didn’t open, or the list looks short?{' '}
+            Chat didn’t open, or the paste came out short?{' '}
+            {tawkEnabled && (
+              <>
+                <button
+                  type="button"
+                  onClick={openTawk}
+                  className="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-900"
+                >
+                  Open the chat
+                </button>{' '}
+                and paste it in, or{' '}
+              </>
+            )}
             <a
-              href={`https://wa.me/${BRAND.whatsapp}`}
-              target="_blank"
-              rel="noreferrer noopener"
+              href={`mailto:${BRAND.email}?subject=${encodeURIComponent(`Market list ${order.reference}`)}&body=${encodeURIComponent(order.message)}`}
               className="font-semibold text-brand-700 underline underline-offset-2"
             >
-              Open the chat
-            </a>{' '}
-            and paste it in.
+              email it to us
+            </a>
+            .
           </p>
           <div className="mt-3">
             <CopyListButton message={order.message} />

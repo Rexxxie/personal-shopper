@@ -13,7 +13,8 @@ import { ChoiceRow, Field, TextArea } from '@/components/ui/Form'
 import { emailRule, phoneRule, required, useFields } from '@/lib/form'
 import { popIn, fadeUp, EASE } from '@/lib/motion'
 import { naira } from '@/lib/utils'
-import { bold, composeMessage, labelled, normalisePhone, openWhatsApp } from '@/lib/whatsapp'
+import { composeMessage, labelled, normalisePhone } from '@/lib/validate'
+import { submitToChat } from '@/lib/tawk'
 
 const BENEFITS = [
   {
@@ -186,7 +187,7 @@ function EnquiryForm() {
   const [freq, setFreq] = useState(FREQ[0])
   const form = useFields({ name: '', company: '', email: '', phone: '', area: '', notes: '' })
 
-  const submit = () => {
+  const submit = async () => {
     const valid = form.validate({
       name: required('We need a name to address the proposal to'),
       company: required('Which company is this for?'),
@@ -197,21 +198,25 @@ function EnquiryForm() {
     if (!valid) return
 
     const { values } = form
-    openWhatsApp(
-      composeMessage([
-        bold('Office enquiry — proposal request'),
+    await submitToChat({
+      subject: `Office enquiry — ${values.company}`,
+      body: composeMessage([
+        'OFFICE ENQUIRY — PROPOSAL REQUEST',
         [
-          `${bold('Contact')}: ${values.name}`,
-          `${bold('Company')}: ${values.company}`,
-          `${bold('Email')}: ${values.email.trim()}`,
-          `${bold('Phone')}: ${normalisePhone(values.phone)}`,
-          `${bold('Office')}: ${values.area}`,
+          `Contact: ${values.name}`,
+          `Company: ${values.company}`,
+          `Email: ${values.email.trim()}`,
+          `Phone: ${normalisePhone(values.phone)}`,
+          `Office: ${values.area}`,
         ].join('\n'),
         [labelled('Team size', size), labelled('Frequency', freq)].filter(Boolean).join('\n'),
-        values.notes.trim() && `${bold('Normally buys')}: ${values.notes.trim()}`,
+        values.notes.trim() && `Normally buys: ${values.notes.trim()}`,
         'Sent from the Ojàmi website — please send a proposal and a suggested standing list.',
       ]),
-    )
+      visitor: { name: values.name, email: values.email.trim(), phone: values.phone },
+      meta: { company: values.company, teamSize: size, frequency: freq, office: values.area },
+      tags: ['office-enquiry'],
+    })
     setSent(true)
   }
 
@@ -286,10 +291,10 @@ function EnquiryForm() {
                     <Check className="h-8 w-8" strokeWidth={2.5} />
                   </motion.span>
                   <h3 className="mt-6 font-display text-2xl font-bold text-brand-950">
-                    Ready in WhatsApp
+                    Ready in the chat
                   </h3>
                   <p className="mt-3 max-w-sm text-[0.95rem] leading-relaxed text-ink-600">
-                    Press send in the WhatsApp thread that just opened and we will come back within one
+                    Your enquiry is copied and the chat is open — paste it in and we will come back within one
                     working day with a proposal and a suggested standing list for your office.
                   </p>
                   <Button
@@ -377,10 +382,10 @@ function EnquiryForm() {
                   />
 
                   <Button type="submit" variant="accent" size="lg" full magnetic={false}>
-                    Send enquiry on WhatsApp
+                    Request a proposal
                   </Button>
-                  <p className="text-center text-[0.75rem] text-ink-400">
-                    Opens WhatsApp with your enquiry ready to send. We reply within one working day.
+                  <p className="text-center text-[0.75rem] text-ink-500">
+                    Opens our live chat with your enquiry ready to paste. We reply within one working day.
                   </p>
                 </div>
               )}

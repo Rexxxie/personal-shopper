@@ -3,7 +3,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { Cursor, Preloader, ScrollProgress, WhatsAppFab } from '@/components/layout/Chrome'
+import { Cursor, Preloader, ScrollProgress, SupportFab } from '@/components/layout/Chrome'
 import { ListDrawer } from '@/components/list/ListDrawer'
 import { ListProvider } from '@/store/list'
 import { useLenis, scrollTop } from '@/lib/useLenis'
@@ -86,7 +86,7 @@ export default function App() {
       <ScrollProgress />
       <Navbar />
       <ListDrawer />
-      <WhatsAppFab />
+      <SupportFab />
       <AnimatedRoutes />
       <Footer />
     </ListProvider>

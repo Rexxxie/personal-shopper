@@ -9,6 +9,7 @@ import { P } from '@/data/images'
 import { BRAND } from '@/data/brand'
 import { naira, cn } from '@/lib/utils'
 import { EASE } from '@/lib/motion'
+import { openTawk } from '@/lib/tawk'
 
 /**
  * A worked demo of what live tracking looks like. The stages advance on a
@@ -48,7 +49,7 @@ export default function Track() {
       <PageHeader
         eyebrow="Preview"
         title={'Watch your shopper\nwork, *live*.'}
-        lead="This is a worked preview of the tracking view we are building — the shopper, the stages and the photos below are examples, not a real run. Today you get all of this over WhatsApp instead: every photo, every price, as it happens."
+        lead="This is a worked preview of the tracking view we are building — the shopper, the stages and the photos below are examples, not a real run. Today you get all of this in the live chat instead: every photo, every price, as it happens."
       />
 
       <Section tone="cream" className="grain !pt-4">
@@ -63,8 +64,8 @@ export default function Track() {
             <Chip tone="accent">Example</Chip>
             <p className="text-[0.88rem] leading-relaxed text-ink-600">
               Nothing on this page is your order. It is a demonstration of the live tracking screen, running
-              on a timer. Real tracking arrives with the shopper app — until then your run is tracked on
-              WhatsApp.
+              on a timer. Real tracking arrives with the shopper app — until then your run is tracked in the
+              live chat.
             </p>
           </div>
 
@@ -109,15 +110,14 @@ export default function Track() {
                   >
                     <Phone className="h-4 w-4" />
                   </a>
-                  <a
-                    href={`https://wa.me/${BRAND.whatsapp}`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] transition-transform hover:scale-105"
+                  <button
+                    type="button"
+                    onClick={openTawk}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 transition-transform hover:scale-105"
                     aria-label="Message your shopper"
                   >
                     <MessageCircle className="h-4 w-4" />
-                  </a>
+                  </button>
                 </div>
               </div>
 
@@ -140,7 +140,7 @@ export default function Track() {
                       <span
                         className={cn(
                           'relative z-10 flex h-[2.1rem] w-[2.1rem] shrink-0 items-center justify-center rounded-full ring-4 ring-cream-50 transition-colors duration-500',
-                          done ? 'bg-brand-600 text-white' : current ? 'bg-accent-500 text-white' : 'bg-cream-300 text-ink-400',
+                          done ? 'bg-brand-600 text-white' : current ? 'bg-accent-500 text-brand-950' : 'bg-cream-300 text-ink-500',
                         )}
                       >
                         {current && (
@@ -156,13 +156,13 @@ export default function Track() {
                         <p
                           className={cn(
                             'text-[0.98rem] font-bold transition-colors',
-                            i <= stage ? 'text-brand-950' : 'text-ink-400',
+                            i <= stage ? 'text-brand-950' : 'text-ink-500',
                           )}
                         >
                           {s.label}
                         </p>
                         <p className="mt-0.5 text-[0.85rem] text-ink-500">
-                          {s.detail} {i <= stage && <span className="text-ink-400">· {s.time}</span>}
+                          {s.detail} {i <= stage && <span className="text-ink-500">· {s.time}</span>}
                         </p>
                       </div>
                     </li>
@@ -224,7 +224,7 @@ export default function Track() {
               {/* latest photo proof */}
               <Reveal className="overflow-hidden rounded-[1.75rem] bg-brand-950">
                 <div className="flex items-center gap-2.5 px-5 py-4">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-500 text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-500 text-brand-950">
                     <Camera className="h-4 w-4" />
                   </span>
                   <div>

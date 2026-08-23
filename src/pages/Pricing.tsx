@@ -24,7 +24,7 @@ const COMPARE = [
   { label: 'Same shopper every time', quick: false, full: false, office: true },
   { label: 'Office reception drop-off', quick: false, full: true, office: true },
   { label: 'Monthly invoice & statement', quick: false, full: false, office: true },
-  { label: 'Priority WhatsApp line', quick: false, full: false, office: true },
+  { label: 'Priority chat line', quick: false, full: false, office: true },
 ]
 
 /** Illustrative baskets so the flat fee lands as concretely as possible. */
@@ -202,7 +202,7 @@ function Cell({ value }: { value: string | boolean }) {
       <Check className="h-3.5 w-3.5" strokeWidth={3} />
     </span>
   ) : (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink-800/5 text-ink-400">
+    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink-800/5 text-ink-500">
       <X className="h-3.5 w-3.5" strokeWidth={2.5} />
     </span>
   )
@@ -233,7 +233,7 @@ function ExampleCard({ example }: { example: (typeof EXAMPLES)[number] }) {
 
       <button
         onClick={() => setOpen((v) => !v)}
-        className="mt-5 self-start text-[0.8rem] font-semibold text-brand-700 underline decoration-brand-500/40 underline-offset-4 transition-colors hover:text-accent-600"
+        className="mt-5 self-start text-[0.8rem] font-semibold text-brand-700 underline decoration-brand-500/40 underline-offset-4 transition-colors hover:text-accent-700"
       >
         {open ? 'Hide the basket' : 'See what’s in the basket'}
       </button>
@@ -248,7 +248,7 @@ function ExampleCard({ example }: { example: (typeof EXAMPLES)[number] }) {
           {items.map((p) => (
             <li key={p.id} className="flex items-baseline justify-between gap-3 text-[0.84rem]">
               <span className="text-ink-600">
-                {p.name} <span className="text-ink-400">· {p.unit}</span>
+                {p.name} <span className="text-ink-500">· {p.unit}</span>
               </span>
               <span className="shrink-0 font-semibold tabular-nums text-ink-700">{naira(p.price)}</span>
             </li>

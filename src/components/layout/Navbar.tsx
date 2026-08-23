@@ -153,7 +153,7 @@ function ListButton({ count, onClick, dark }: { count: number; onClick: () => vo
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 520, damping: 20 }}
-            className="absolute -right-1 -top-1 flex h-[1.35rem] min-w-[1.35rem] items-center justify-center rounded-full bg-accent-500 px-1 text-[0.68rem] font-bold text-white shadow-sm"
+            className="absolute -right-1 -top-1 flex h-[1.35rem] min-w-[1.35rem] items-center justify-center rounded-full bg-accent-500 px-1 text-[0.68rem] font-bold text-brand-950 shadow-sm"
           >
             {count > 99 ? '99+' : count}
           </motion.span>

@@ -13,7 +13,8 @@ import { emailRule, optional, phoneRule, required, useFields } from '@/lib/form'
 import { MARKETS } from '@/data/markets'
 import { popIn, fadeUp, EASE } from '@/lib/motion'
 import { naira } from '@/lib/utils'
-import { bold, composeMessage, labelled, normalisePhone, openWhatsApp } from '@/lib/whatsapp'
+import { composeMessage, labelled, normalisePhone } from '@/lib/validate'
+import { submitToChat } from '@/lib/tawk'
 
 const PERKS = [
   {
@@ -233,7 +234,7 @@ function ApplicationForm() {
     setMarkets((m) => (m.includes(id) ? m.filter((x) => x !== id) : [...m, id]))
   }
 
-  const submit = () => {
+  const submit = async () => {
     // Market knowledge is the whole job, so it is not an optional answer.
     const marketsOk = markets.length > 0
     setMarketsError(marketsOk ? undefined : 'Pick at least one market you know well')
@@ -251,24 +252,26 @@ function ApplicationForm() {
       m.name.replace(' Market', ''),
     )
 
-    openWhatsApp(
-      composeMessage([
-        bold('Shopper application'),
+    await submitToChat({
+      subject: `Shopper application — ${values.name}`,
+      body: composeMessage([
+        'SHOPPER APPLICATION',
         [
-          `${bold('Name')}: ${values.name}`,
-          `${bold('Phone')}: ${normalisePhone(values.phone)}`,
+          `Name: ${values.name}`,
+          `Phone: ${normalisePhone(values.phone)}`,
           labelled('Email', values.email.trim()),
-          `${bold('Lives in')}: ${values.area}`,
+          `Lives in: ${values.area}`,
         ]
           .filter(Boolean)
           .join('\n'),
-        [`${bold('Knows these markets')}: ${named.join(', ')}`, `${bold('Availability')}: ${avail}`].join(
-          '\n',
-        ),
-        values.about.trim() && `${bold('About them')}: ${values.about.trim()}`,
+        [`Knows these markets: ${named.join(', ')}`, `Availability: ${avail}`].join('\n'),
+        values.about.trim() && `About them: ${values.about.trim()}`,
         'Sent from the Ojàmi website — applying to become a shopper.',
       ]),
-    )
+      visitor: { name: values.name, phone: values.phone, email: values.email.trim() || undefined },
+      meta: { livesIn: values.area, markets: named.join(', '), availability: avail },
+      tags: ['shopper-application'],
+    })
     setSent(true)
   }
 
@@ -312,11 +315,11 @@ function ApplicationForm() {
                     <Check className="h-8 w-8" strokeWidth={2.5} />
                   </motion.span>
                   <h3 className="mt-6 font-display text-2xl font-bold text-brand-950">
-                    One more step in WhatsApp
+                    One more step in the chat
                   </h3>
                   <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-ink-600">
-                    Press send on the WhatsApp message that just opened. If your application looks like a fit
-                    we will call you within two working days to arrange a short interview at our Bodija
+                    Your application is copied and the chat is open — paste it in and send. If it looks like a
+                    fit we will call you within two working days to arrange a short interview at our Bodija
                     office.
                   </p>
                   <Button
@@ -402,9 +405,9 @@ function ApplicationForm() {
                   />
 
                   <Button type="submit" variant="accent" size="lg" full magnetic={false}>
-                    Send application on WhatsApp
+                    Submit application
                   </Button>
-                  <p className="text-center text-[0.75rem] leading-relaxed text-ink-400">
+                  <p className="text-center text-[0.75rem] leading-relaxed text-ink-500">
                     We verify NIN, address and a guarantor before anyone starts. Your details stay with us and
                     are never shared.
                   </p>

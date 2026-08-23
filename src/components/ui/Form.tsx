@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
    ========================================================================== */
 
 const INPUT_BASE =
-  'w-full bg-brand-900/4 text-[0.92rem] ring-1 ring-inset placeholder:text-ink-400 focus:outline-none transition-shadow'
+  'w-full bg-brand-900/4 text-[0.92rem] ring-1 ring-inset placeholder:text-ink-500 focus:outline-none transition-shadow'
 
 function ringFor(error?: string) {
   return error
